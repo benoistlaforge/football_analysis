@@ -1,0 +1,39 @@
+---
+title: "Ligue 1 data base"
+output: html_notebook
+---
+
+# Loading files
+
+```{r}
+# First: sets the working directory
+setwd("~/Documents/Ligue 1")
+
+# Second: gets files list
+files <- list.files(path = ".", full.names = TRUE, recursive = TRUE, pattern = "*.csv")
+
+# Third: loads every file
+data <- data.frame(read.csv(files[1]))
+for (i in 2:length(files)) {
+  print(i)
+  data <- rbind(data, read.csv(files[i]))
+}
+# Fourth : eventually cleans results with no half time scores
+data <- subset(x = data, is.na(data$HT) == FALSE)
+```
+
+# Data analysis
+
+## Number of games in data base
+
+```{r}
+length(data$Date)
+```
+
+## Adds full time result to data base
+
+```{r}
+Score <- strsplit(paste(data$FT), "-")
+names(Score) <- c("FT.1", "FT.2")
+data<- cbind(data, Score)
+```
